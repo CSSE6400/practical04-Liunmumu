@@ -15,17 +15,14 @@ provider "aws" {
 resource "aws_instance" "hextris-server" { 
    ami = "ami-005f9685cb30f234b" 
    instance_type = "t2.micro" 
- 
+   user_data = file("./serve-hextris.sh")
+   security_groups = [aws_security_group.hextris-server.name]
+
+
    tags = { 
       Name = "hextris" 
    } 
-   
-   user_data = file("./serve-hextris.sh")
-   security_groups = [aws_security_group.hextris-server.name]
-}
 
-output "hextris-url" { 
- value = aws_instance.hextris-server.public_ip 
 }
 
 resource "aws_security_group" "hextris-server" { 
@@ -53,4 +50,7 @@ resource "aws_security_group" "hextris-server" {
    cidr_blocks = ["0.0.0.0/0"] 
  } 
 }
- 
+
+output "hextris-url" { 
+ value = aws_instance.hextris-server.public_ip 
+}
